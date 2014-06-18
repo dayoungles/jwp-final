@@ -1,6 +1,7 @@
 package next.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,8 @@ public class QuestionDao {
 	public void insert(Question question) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
+		
+		
 		try {
 			con = ConnectionManager.getConnection();
 			String sql = "INSERT INTO QUESTIONS (writer, title, contents, createdDate, countOfComment) VALUES (?, ?, ?, ?, ?)";
@@ -46,12 +49,36 @@ public class QuestionDao {
 			con = ConnectionManager.getConnection();
 			String sql = "SELECT questionId, writer, title, createdDate, countOfComment FROM QUESTIONS " + 
 					"order by questionId desc";
+//			
+//			ReadTemplate<List<Question>> template = new ReadTemplate<List<Question>>(sql) {
+//				
+//				@Override
+//				public List<Question> read(ResultSet rs) throws SQLException {
+//					List<Question> list = new ArrayList<Question>();
+//					while(rs.next()){
+//						long questionId = rs.getLong("questionId");
+//						String writer = rs.getString("writer");
+//						String title = rs.getString("title");
+//						String contents = rs.getString("contents");
+//						long createdDate = rs.getLong("createdDate");
+//						Date date = new Date(createdDate);
+//						int countOfComment = rs.getInt("countOfComment");
+//						list.add(new Question(questionId, writer, title, contents, date, countOfComment));
+//					}
+//					return list;
+//				}
+//			};
+//			
+//			return (List<Question>) template.execute();
+			
+			
 			pstmt = con.prepareStatement(sql);
 
 			rs = pstmt.executeQuery();
 
 			List<Question> questions = new ArrayList<Question>();
 			Question question = null;
+
 			while (rs.next()) {
 				question = new Question(
 						rs.getLong("questionId"),
@@ -79,12 +106,36 @@ public class QuestionDao {
 
 	public Question findById(long questionId) throws SQLException {
 		Connection con = null;
+		con = ConnectionManager.getConnection();
+		String sql = "SELECT questionId, writer, title, contents, createdDate, countOfComment FROM QUESTIONS " + 
+				"WHERE questionId = ?";
+		
+//		ReadTemplate<Question> template = new ReadTemplate<Question>(sql, questionId) {
+//			
+//			@Override
+//			public Question read(ResultSet rs) throws SQLException {
+//				Question question = null;
+//				while(rs.next()){
+//					long questionId = rs.getLong("questionId");
+//					String writer = rs.getString("writer");
+//					String title = rs.getString("title");
+//					String contents = rs.getString("contents");
+//					long createdDate = rs.getLong("createdDate");
+//					Date date = new Date(createdDate);
+//					int countOfComment = rs.getInt("countOfComment");
+//					question= new Question(questionId, writer, title, contents, date, countOfComment);
+//				}
+//				return question;
+//			}
+//		};
+//		
+//		return (Question)template.execute();
+		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			con = ConnectionManager.getConnection();
-			String sql = "SELECT questionId, writer, title, contents, createdDate, countOfComment FROM QUESTIONS " + 
-					"WHERE questionId = ?";
+
 			pstmt = con.prepareStatement(sql);
 			pstmt.setLong(1, questionId);
 
@@ -114,4 +165,6 @@ public class QuestionDao {
 			}
 		}
 	}
+	
+
 }

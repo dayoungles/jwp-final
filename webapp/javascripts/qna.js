@@ -16,7 +16,9 @@ function writeAnswers(e) {
 	 
 	 request.onreadystatechange = function() {
 		 if(request.readyState == 4 && request.status == 200) {
-			 location.reload(true);
+			 console.log("testtest")
+			 location.reload(true);//새로고침하는 녀석인가?
+			 
 		 }
 	 }
 	 
